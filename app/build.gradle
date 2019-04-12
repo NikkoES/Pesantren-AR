@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "io.github.nikkoes.pesantrenar"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation files('libs/beyondar-v0.9.3.jar')
+    //android
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
+    //networking
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.amitshekhar.android:android-networking:1.0.2'
+
+    //image
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.mikhaellopez:circularimageview:3.2.0'
+
+    //binding
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    //other
+    implementation 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'com.aurelhubert:ahbottomnavigation:2.0.4'
+    implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.github.paolorotolo:appintro:4.1.0'
+
+    //play services
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-places:16.0.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
+
+    //testing
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
