@@ -51,10 +51,6 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
 
     @BindView(R.id.txt_rute_pesantren)
     TextView txtRutePesantren;
-    @BindView(R.id.ar_view)
-    View arView;
-    @BindView(R.id.txt_jarak_pesantren)
-    TextView txtJarakPesantren;
     @BindView(R.id.arcam_layout)
     FrameLayout arcamLayout;
 
@@ -273,9 +269,6 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
                         if (response instanceof RuteResponse) {
                             RuteResponse response1 = ((RuteResponse) response);
                             int stepSize = response1.getRoutes().get(0).getLegs().get(0).getSteps().size();
-
-                            txtJarakPesantren.setVisibility(View.VISIBLE);
-                            txtJarakPesantren.setText(response1.getRoutes().get(0).getLegs().get(0).getDistance().getText());
 
                             steps = new Step[stepSize];
 

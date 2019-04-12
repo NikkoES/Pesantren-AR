@@ -40,21 +40,6 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/cam_grad_bottom" />
 
-        <TextView
-            android:id="@+id/txt_jarak_pesantren"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/src_dest_bg"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:text="Dist"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
     </RelativeLayout>
 
 </FrameLayout>
