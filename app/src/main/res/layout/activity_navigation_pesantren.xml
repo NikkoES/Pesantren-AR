@@ -21,7 +21,7 @@
             android:background="@drawable/cam_grad_top" />
 
         <TextView
-            android:id="@+id/txt_rute_pesantren"
+            android:id="@+id/txt_nama_pesantren"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:layout_centerHorizontal="true"

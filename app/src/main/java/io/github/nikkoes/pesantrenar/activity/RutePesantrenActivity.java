@@ -39,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.nikkoes.pesantrenar.R;
 import io.github.nikkoes.pesantrenar.ar.ArFragmentSupport;
+import io.github.nikkoes.pesantrenar.model.Pesantren;
 import io.github.nikkoes.pesantrenar.model.rute.RuteResponse;
 import io.github.nikkoes.pesantrenar.model.rute.Step;
 import io.github.nikkoes.pesantrenar.utils.Algorithm;
@@ -49,10 +50,12 @@ import static io.github.nikkoes.pesantrenar.data.Constant.URL_MAPS;
 public class RutePesantrenActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    @BindView(R.id.txt_rute_pesantren)
-    TextView txtRutePesantren;
+    @BindView(R.id.txt_nama_pesantren)
+    TextView txtNamaPesantren;
     @BindView(R.id.arcam_layout)
     FrameLayout arcamLayout;
+
+    Pesantren pesantren;
 
     private final static String TAG = "Rute Pesantren";
     private String srcLatLng;
@@ -72,6 +75,8 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_pesantren);
         ButterKnife.bind(this);
+
+        pesantren = (Pesantren) getIntent().getSerializableExtra("pesantren");
 
         setGoogleClient();
     }
@@ -154,7 +159,7 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
 
                 polyGeoObj.setGeoPosition(polylineLatLng.get(j).get(k).latitude,
                         polylineLatLng.get(j).get(k).longitude);
-                polyGeoObj.setImageResource(R.drawable.ic_launcher);
+                polyGeoObj.setImageResource(R.drawable.ar_sphere_default);
                 polyGeoObj.setName("arObj" + j + k);
 
                 /*
@@ -221,7 +226,7 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
 
                             //Set the Geoposition along with image and name
                             inter_polyGeoObj.setGeoPosition(tempLatLng.latitude, tempLatLng.longitude);
-                            inter_polyGeoObj.setImageResource(R.drawable.ic_launcher);
+                            inter_polyGeoObj.setImageResource(R.drawable.ar_sphere_default);
                             inter_polyGeoObj.setName("inter_arObj" + j + k + i);
 
                             //Log.d(TAG, "initAR: LOC: k="+k+" "+ inter_polyGeoObj.getLatitude() + "," + inter_polyGeoObj.getLongitude());
@@ -251,7 +256,7 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
             srcLatLng = getIntent().getStringExtra("origin");
             destLatLng = getIntent().getStringExtra("destination");
 
-            txtRutePesantren.setText(srcLatLng + " -> " + destLatLng);
+            txtNamaPesantren.setText(pesantren.getNamaPesantren());
 
             loadRutePesantren();
         }

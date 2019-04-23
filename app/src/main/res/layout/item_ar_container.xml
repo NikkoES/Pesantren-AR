@@ -17,7 +17,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_pesantren" />
 
         <TextView
             android:id="@+id/txt_nama_pesantren"

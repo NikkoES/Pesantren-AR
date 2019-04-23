@@ -153,7 +153,7 @@ public class CariPesantrenActivity extends FragmentActivity implements GoogleApi
         for (int i = 0; i < arObjectList.size(); i++) {
             ArObject pesantren = arObjectList.get(i);
             if (idPesantren.equalsIgnoreCase(pesantren.getIdPesantren())) {
-                Picasso.get().load(pesantren.getImagePesantren()).placeholder(R.drawable.ic_launcher).into(imagePesantren);
+                Picasso.get().load(pesantren.getImagePesantren()).placeholder(R.drawable.ic_pesantren).into(imagePesantren);
                 txtNamaPesantren.setText(pesantren.getNamaPesantren());
                 txtAlamatPesantren.setText(pesantren.getAlamatPesantren());
                 txtJarakPesantren.setText("" + pesantren.getJarakPesantren() + " KM");
@@ -178,7 +178,11 @@ public class CariPesantrenActivity extends FragmentActivity implements GoogleApi
         arObjectList = new ArrayList<>();
 
         world = new World(getApplicationContext());
-        world.setGeoPosition(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        try {
+            world.setGeoPosition(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        } catch (NullPointerException e) {
+            world.setGeoPosition(0, 0);
+        }
         world.setDefaultImage(R.drawable.ar_sphere_default);
 
         arFragmentSupport.getGLSurfaceView().setPullCloserDistance(50);

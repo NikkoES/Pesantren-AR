@@ -88,7 +88,7 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
     }
 
     private void initUI() {
-        Picasso.get().load(pesantren.getFoto()).placeholder(R.drawable.ic_launcher).into(imagePesantren);
+        Picasso.get().load(pesantren.getFoto()).placeholder(R.drawable.ic_pesantren).into(imagePesantren);
         Location pesantrenLocation = new Location("");
         pesantrenLocation.setLatitude(Double.parseDouble(pesantren.getLatitude()));
         pesantrenLocation.setLongitude(Double.parseDouble(pesantren.getLongitude()));
@@ -111,6 +111,7 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
         switch (v.getId()) {
             case R.id.btn_navigation:
                 Intent intent = new Intent(this, RutePesantrenActivity.class);
+                intent.putExtra("pesantren", pesantren);
                 intent.putExtra("origin", myLocation.latitude + "," + myLocation.longitude);
                 intent.putExtra("destination", pesantren.getLatitude() + "," + pesantren.getLongitude());
                 startActivity(intent);
@@ -153,7 +154,7 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
         int height = 100;
         int width = 100;
 
-        BitmapDrawable bitMine = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_launcher);
+        BitmapDrawable bitMine = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_pesantren);
         Bitmap bMine = bitMine.getBitmap();
         Bitmap smallMarkerMine = Bitmap.createScaledBitmap(bMine, width, height, false);
 
@@ -162,15 +163,5 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
         mMap.addMarker(new MarkerOptions().position(lokasiPesantren).title(pesantren.getNamaPesantren()).snippet("Alamat : " + pesantren.getAlamat()).icon(BitmapDescriptorFactory.fromBitmap(smallMarkerMine)));
         CameraPosition cameraPosition = new CameraPosition.Builder().target(lokasiPesantren).zoom(15).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
-
-    @OnClick({R.id.btn_navigation, R.id.btn_shareloc})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_navigation:
-                break;
-            case R.id.btn_shareloc:
-                break;
-        }
     }
 }
