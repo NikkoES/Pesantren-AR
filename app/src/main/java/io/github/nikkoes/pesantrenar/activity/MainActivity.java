@@ -57,7 +57,7 @@ import io.github.nikkoes.pesantrenar.utils.DialogUtils;
 import io.github.nikkoes.pesantrenar.utils.NetworkCheck;
 import io.github.nikkoes.pesantrenar.utils.PermissionCheck;
 
-import static io.github.nikkoes.pesantrenar.data.Constant.BASE_URL;
+import static io.github.nikkoes.pesantrenar.data.Constant.PESANTREN;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         mMap.setMyLocationEnabled(true);
 
-        AndroidNetworking.get(BASE_URL + "pesantren/")
+        AndroidNetworking.get(PESANTREN)
                 .build()
                 .getAsObject(PesantrenResponse.class, new ParsedRequestListener() {
                     @Override
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 //init pesantren location
                                 LatLng lokasiPesantren = new LatLng(Double.parseDouble(pesantren.getLatitude()), Double.parseDouble(pesantren.getLongitude()));
-                                mMap.addMarker(new MarkerOptions().position(lokasiPesantren).title(pesantren.getNamaPesantren()).snippet("ID Pesantren : " + pesantren.getIdPesantren()).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                                mMap.addMarker(new MarkerOptions().position(lokasiPesantren).title(pesantren.getNamaPesantren()).snippet("ID A : " + pesantren.getIdPesantren()).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
                                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                                     @Override

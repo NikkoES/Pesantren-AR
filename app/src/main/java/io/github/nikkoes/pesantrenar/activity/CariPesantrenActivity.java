@@ -72,7 +72,7 @@ public class CariPesantrenActivity extends FragmentActivity implements GoogleApi
     @BindView(R.id.layout_seekbar)
     CardView layoutSeekbar;
 
-    private final static String TAG = "Pencarian Pesantren";
+    private final static String TAG = "Pencarian A";
 
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
@@ -200,7 +200,13 @@ public class CariPesantrenActivity extends FragmentActivity implements GoogleApi
             TextView txtJarak = view.findViewById(R.id.txt_jarak_pesantren);
             ImageView imagePesantren = view.findViewById(R.id.image_pesantren);
 
-            double distance = Algorithm.calculateHarversine(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.parseDouble(listPesantren.get(i).getLatitude()), Double.parseDouble(listPesantren.get(i).getLongitude()));
+            double distance;
+
+            try {
+                distance = Algorithm.calculateHarversine(mLastLocation.getLatitude(), mLastLocation.getLongitude(), Double.parseDouble(listPesantren.get(i).getLatitude()), Double.parseDouble(listPesantren.get(i).getLongitude()));
+            } catch (NullPointerException e) {
+                distance = Algorithm.calculateHarversine(0, 0, Double.parseDouble(listPesantren.get(i).getLatitude()), Double.parseDouble(listPesantren.get(i).getLongitude()));
+            }
 
             Picasso.get().load(pesantren.getFoto()).placeholder(R.drawable.ic_launcher).into(imagePesantren);
             txtNama.setText(pesantren.getNamaPesantren());

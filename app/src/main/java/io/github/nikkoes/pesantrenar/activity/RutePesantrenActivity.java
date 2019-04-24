@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +56,7 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
 
     Pesantren pesantren;
 
-    private final static String TAG = "Rute Pesantren";
+    private final static String TAG = "Rute A";
     private String srcLatLng;
     private String destLatLng;
     private Step steps[];

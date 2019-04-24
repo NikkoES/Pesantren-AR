@@ -1,24 +1,31 @@
+
 package io.github.nikkoes.pesantrenar.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
+import com.google.gson.annotations.Expose;
 
+@SuppressWarnings("unused")
 public class PesantrenResponse {
 
-    @SerializedName("status")
-    @Expose
-    private String status;
-    @SerializedName("data")
     @Expose
     private List<Pesantren> data;
+    @Expose
+    private String status;
+
+    public List<Pesantren> getData() {
+        return data;
+    }
+
+    public void setData(List<Pesantren> data) {
+        this.data = data;
+    }
 
     public String getStatus() {
         return status;
     }
 
-    public List<Pesantren> getData() {
-        return data;
+    public void setStatus(String status) {
+        this.status = status;
     }
+
 }
