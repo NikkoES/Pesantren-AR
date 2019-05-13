@@ -185,7 +185,7 @@ public class CariPesantrenActivity extends FragmentActivity implements GoogleApi
         }
         world.setDefaultImage(R.drawable.ar_sphere_default);
 
-        arFragmentSupport.getGLSurfaceView().setPullCloserDistance(50);
+        arFragmentSupport.getGLSurfaceView().setPullCloserDistance(40);
 
         //distance in metre (m)
         arFragmentSupport.setMaxDistanceToRender(radius);

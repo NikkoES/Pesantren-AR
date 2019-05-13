@@ -44,6 +44,14 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
     TextView txtJarak;
     @BindView(R.id.image_pesantren)
     ImageView imagePesantren;
+    @BindView(R.id.txt_pimpinan)
+    TextView txtPimpinan;
+    @BindView(R.id.txt_ormas)
+    TextView txtOrmas;
+    @BindView(R.id.txt_kurikulum)
+    TextView txtKurikulum;
+    @BindView(R.id.txt_fasilitas)
+    TextView txtFasilitas;
 
     private GoogleMap mMap;
     private UiSettings mUiSettings;
@@ -94,7 +102,11 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
 
         double distanceHarversine = Algorithm.calculateHarversine(myLocation.latitude, myLocation.longitude, Double.parseDouble(pesantren.getLatitude()), Double.parseDouble(pesantren.getLongitude()));
 
-        txtKontak.setText(pesantren.getFasilitas());
+        txtPimpinan.setText(pesantren.getPimpinan());
+        txtOrmas.setText(pesantren.getOrmas());
+        txtKurikulum.setText(pesantren.getKurikulum());
+        txtFasilitas.setText(pesantren.getFasilitas());
+        txtKontak.setText(pesantren.getNoTelp());
         txtJarak.setText(distanceHarversine + " km");
         txtAlamat.setText(pesantren.getAlamat());
     }
@@ -117,7 +129,7 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
                 break;
             case R.id.btn_shareloc:
                 String uri = "http://maps.google.com/maps?saddr=" + pesantren.getLatitude() + "," + pesantren.getLongitude();
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String subject = "Berikut adalah lokasi dari " + pesantren.getNamaPesantren();
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, subject + "\n" + uri);

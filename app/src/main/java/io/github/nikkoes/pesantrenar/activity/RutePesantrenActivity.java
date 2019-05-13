@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
 
@@ -96,28 +97,28 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
         world = new World(getApplicationContext());
 
         world.setGeoPosition(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        Log.d(TAG, "initAR: LOCATION" + mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
+        Log.d(TAG, "LOCATION : " + mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
         world.setDefaultImage(R.drawable.ar_sphere_default);
 
         arFragmentSupport = (ArFragmentSupport) getSupportFragmentManager().findFragmentById(R.id.layout_cam_ar);
 
-        GeoObject signObjects[] = new GeoObject[steps.length];
+        Log.d(TAG, "BANYAKNYA STEP : " + steps.length);
 
-        Log.d(TAG, "initAR: STEP.LENGTH:" + steps.length);
-        //TODO The given below is for rendering MAJOR STEPS LOCATIONS
         for (int i = 0; i < steps.length; i++) {
             polylineLatLng.add(i, PolyUtil.decode(steps[i].getPolyline().getPoints()));
 
             String instructions = steps[i].getHtmlInstructions();
 
+            //indeks 0 berarti step pertama
             if (i == 0) {
                 GeoObject signObject = new GeoObject(10000 + i);
                 signObject.setImageResource(R.drawable.start);
                 signObject.setGeoPosition(steps[i].getStartLocation().getLat(), steps[i].getStartLocation().getLng());
                 world.addBeyondarObject(signObject);
-                Log.d(TAG, "initAR: START SIGN:" + i);
+                Log.d(TAG, "\nSTART : " + i);
             }
 
+            //indeks terakhir berarti step terakhir
             if (i == steps.length - 1) {
                 GeoObject signObject = new GeoObject(10000 + i);
                 signObject.setImageResource(R.drawable.stop);
@@ -128,70 +129,54 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
                                 new LatLng(steps[i].getEndLocation().getLat(), steps[i].getEndLocation().getLng())));
                 signObject.setGeoPosition(latlng.latitude, latlng.longitude);
                 world.addBeyondarObject(signObject);
-                Log.d(TAG, "initAR: STOP SIGN:" + i);
+                Log.d(TAG, "\nEND : " + i);
             }
 
+            //instruksi belok kanan
             if (instructions.contains("right")) {
-                Log.d(TAG, "initAR: " + instructions);
+                Log.d(TAG, "INSTRUKSI : " + instructions);
                 GeoObject signObject = new GeoObject(10000 + i);
                 signObject.setImageResource(R.drawable.turn_right);
                 signObject.setGeoPosition(steps[i].getStartLocation().getLat(), steps[i].getStartLocation().getLng());
                 world.addBeyondarObject(signObject);
-                Log.d(TAG, "initAR: RIGHT SIGN:" + i);
-            } else if (instructions.contains("left")) {
-                Log.d(TAG, "initAR: " + instructions);
+                Log.d(TAG, "BELOK KANAN : " + i);
+            }
+            //instruksi belok kiri
+            else if (instructions.contains("left")) {
+                Log.d(TAG, "INSTRUKSI : " + instructions);
                 GeoObject signObject = new GeoObject(10000 + i);
                 signObject.setImageResource(R.drawable.turn_left);
                 signObject.setGeoPosition(steps[i].getStartLocation().getLat(), steps[i].getStartLocation().getLng());
                 world.addBeyondarObject(signObject);
-                Log.d(TAG, "initAR: LEFT SIGN:" + i);
+                Log.d(TAG, "BELOK KIRI : " + i);
             }
         }
 
         int temp_polycount = 0;
         int temp_inter_polycount = 0;
 
-        //TODO The Given below is for rendering all the LatLng in THe polylines , which is more accurate
+        //untuk melakukan render ke bentuk AR
         for (int j = 0; j < polylineLatLng.size(); j++) {
             for (int k = 0; k < polylineLatLng.get(j).size(); k++) {
                 GeoObject polyGeoObj = new GeoObject(1000 + temp_polycount++);
 
-                polyGeoObj.setGeoPosition(polylineLatLng.get(j).get(k).latitude,
-                        polylineLatLng.get(j).get(k).longitude);
+                polyGeoObj.setGeoPosition(polylineLatLng.get(j).get(k).latitude, polylineLatLng.get(j).get(k).longitude);
                 polyGeoObj.setImageResource(R.drawable.ar_sphere_default);
                 polyGeoObj.setName("arObj" + j + k);
 
-                /*
-                To fill the gaps between the Poly objects as AR Objects in the AR View , add some more
-                AR Objects which are equally spaced and provide a continuous AR Object path along the route
-
-                Haversine formula , Bearing Calculation and formula to find
-                Destination point given distance and bearing from start point is used .
-                 */
-
                 try {
-
-                    //Initialize distance of consecutive polyobjects
+                    //menghitung jarak antar polyline
                     double dist = Algorithm.calculateHarversine(polylineLatLng.get(j).get(k).latitude,
                             polylineLatLng.get(j).get(k).longitude, polylineLatLng.get(j).get(k + 1).latitude,
                             polylineLatLng.get(j).get(k + 1).longitude) * 1000;
 
-                    //Log.d(TAG, "initAR: polyLineLatLng("+j+","+k+")="+polylineLatLng.get(j).get(k).latitude+","+polylineLatLng.get(j).get(k).longitude);
-                    //Log.d(TAG, "initAR: polyLineLatLng("+j+","+(k+1)+")="+polylineLatLng.get(j).get(k+1).latitude+","+polylineLatLng.get(j).get(k+1).longitude);
-
-                    //Check if distance between polyobjects is greater than twice the amount of space
-                    // intended , here it is (3*2)=6 .
+                    //mengecek jika jarak antara 2 polyline lebih besar 2 kali dari pada luas space (biar gak terjadi renggang")
                     if (dist > 6) {
 
-                        //Initialize count of ar objects to be added
+                        Log.d(TAG, "EXCEPTION : " + dist);
+
+                        //jumlah ar objek yang akan ditambahkan
                         int arObj_count = ((int) dist / 3) - 1;
-
-                        //Log.d(TAG, "initAR: Dist:" + dist + " # No of Objects: " + arObj_count + "\n --------");
-
-                        double bearing = Algorithm.calculateBearing(polylineLatLng.get(j).get(k).latitude,
-                                polylineLatLng.get(j).get(k + 1).latitude,
-                                polylineLatLng.get(j).get(k).longitude,
-                                polylineLatLng.get(j).get(k + 1).longitude);
 
                         double heading = SphericalUtil.computeHeading(new LatLng(polylineLatLng.get(j).get(k).latitude,
                                         polylineLatLng.get(j).get(k).longitude),
@@ -203,14 +188,14 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
                                 , 3f
                                 , heading);
 
-                        //The distance to be incremented
+                        //jarak objek yang ditambahkan
                         double increment_dist = 3f;
 
                         for (int i = 0; i < arObj_count; i++) {
+
                             GeoObject inter_polyGeoObj = new GeoObject(5000 + temp_inter_polycount++);
 
-                            //Store the Lat,Lng details into new LatLng Objects using the functions
-                            //in LocationCalc class.
+                            //simpen lat long tambahan
                             if (i > 0 && k < polylineLatLng.get(j).size()) {
                                 increment_dist += 3f;
 
@@ -223,28 +208,21 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
                                                 , polylineLatLng.get(j).get(k + 1).longitude)));
                             }
 
-                            //Set the Geoposition along with image and name
                             inter_polyGeoObj.setGeoPosition(tempLatLng.latitude, tempLatLng.longitude);
                             inter_polyGeoObj.setImageResource(R.drawable.ar_sphere_default);
                             inter_polyGeoObj.setName("inter_arObj" + j + k + i);
 
-                            //Log.d(TAG, "initAR: LOC: k="+k+" "+ inter_polyGeoObj.getLatitude() + "," + inter_polyGeoObj.getLongitude());
-
-                            //Add Intermediate ArObjects to Augmented Reality World
                             world.addBeyondarObject(inter_polyGeoObj);
                         }
                     }
                 } catch (Exception e) {
-                    Log.d(TAG, "initAR: EXCEPTION CAUGHT:" + e.getMessage());
+                    Log.d(TAG, "EXCEPTION : " + e.getMessage());
                 }
 
-                //Add PolyObjects as ArObjects to Augmented Reality World
                 world.addBeyondarObject(polyGeoObj);
-                Log.d(TAG, "\n\n");
             }
         }
 
-        // Send to the fragment
         arFragmentSupport.setWorld(world);
     }
 
