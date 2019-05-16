@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.model.Dash;
+
 import io.github.nikkoes.pesantrenar.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -19,7 +21,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(SplashScreenActivity.this, MainActivity.class);
+                Intent i = new Intent(SplashScreenActivity.this, DashboardActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);

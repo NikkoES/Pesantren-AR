@@ -56,8 +56,6 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
     private GoogleMap mMap;
     private UiSettings mUiSettings;
 
-    List<Pesantren> listPesantren;
-    String idPesantren;
     Pesantren pesantren;
 
     LatLng myLocation;
@@ -72,16 +70,8 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
     }
 
     private void initView() {
-        listPesantren = (List<Pesantren>) getIntent().getSerializableExtra("list_pesantren");
-        idPesantren = getIntent().getStringExtra("id_pesantren");
+        pesantren = (Pesantren) getIntent().getSerializableExtra("pesantren");
         myLocation = getIntent().getExtras().getParcelable("my_location");
-
-        for (int i = 0; i < listPesantren.size(); i++) {
-            if (idPesantren.equalsIgnoreCase(listPesantren.get(i).getIdPesantren())) {
-                pesantren = listPesantren.get(i);
-                break;
-            }
-        }
 
         initMapFragment();
         initToolbar();

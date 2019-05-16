@@ -29,23 +29,52 @@
                 android:orientation="horizontal"
                 android:padding="8dp">
 
-                <ImageView
+                <LinearLayout
                     android:id="@+id/btn_navigation"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_navigation"
-                    android:tint="@color/colorPrimary" />
+                    android:orientation="vertical">
 
-                <ImageView
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_navigation"
+                        android:tint="@color/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Navigasi AR"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/btn_shareloc"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_share"
-                    android:tint="@color/colorPrimary" />
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_share"
+                        android:tint="@color/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Bagikan Lokasi"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
