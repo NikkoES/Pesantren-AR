@@ -2,8 +2,11 @@ package io.github.nikkoes.pesantrenar.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -12,7 +15,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +37,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,10 +119,35 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
 
             String instructions = steps[i].getHtmlInstructions();
 
+            View view = getLayoutInflater().inflate(R.layout.item_ar_container, null);
+            TextView txtNama = view.findViewById(R.id.txt_nama_pesantren);
+            TextView txtJarak = view.findViewById(R.id.txt_jarak_pesantren);
+            ImageView imagePesantren = view.findViewById(R.id.image_pesantren);
+
             //indeks 0 berarti step pertama
             if (i == 0) {
+                imagePesantren.setImageResource(R.drawable.start);
+                txtNama.setText("Lurus Sepanjang :");
+                txtJarak.setText(steps[i].getDistance().getText());
+
+                view.setDrawingCacheEnabled(true);
+                view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+                Bitmap snapshot;
+                try {
+                    view.measure(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                    snapshot = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(snapshot);
+                    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+                    view.draw(canvas);
+                } finally {
+                    view.setDrawingCacheEnabled(false);
+                }
+
+                String uri = saveToInternalStorage(snapshot, pesantren.getIdPesantren() + ".png");
+
                 GeoObject signObject = new GeoObject(10000 + i);
-                signObject.setImageResource(R.drawable.start);
+                signObject.setImageUri(uri);
                 signObject.setGeoPosition(steps[i].getStartLocation().getLat(), steps[i].getStartLocation().getLng());
                 world.addBeyondarObject(signObject);
                 Log.d(TAG, "\nSTART : " + i);
@@ -120,8 +155,28 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
 
             //indeks terakhir berarti step terakhir
             if (i == steps.length - 1) {
+                imagePesantren.setImageResource(R.drawable.stop);
+                txtNama.setText("Anda Telah Tiba Di : ");
+                txtJarak.setText(pesantren.getNamaPesantren());
+
+                view.setDrawingCacheEnabled(true);
+                view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+                Bitmap snapshot;
+                try {
+                    view.measure(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                    snapshot = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(snapshot);
+                    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+                    view.draw(canvas);
+                } finally {
+                    view.setDrawingCacheEnabled(false);
+                }
+
+                String uri = saveToInternalStorage(snapshot, pesantren.getIdPesantren() + ".png");
+
                 GeoObject signObject = new GeoObject(10000 + i);
-                signObject.setImageResource(R.drawable.stop);
+                signObject.setImageUri(uri);
                 LatLng latlng = SphericalUtil.computeOffset(
                         new LatLng(steps[i].getEndLocation().getLat(), steps[i].getEndLocation().getLng()),
                         4f, SphericalUtil.computeHeading(
@@ -135,8 +190,28 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
             //instruksi belok kanan
             if (instructions.contains("right")) {
                 Log.d(TAG, "INSTRUKSI : " + instructions);
+                imagePesantren.setImageResource(R.drawable.turn_right);
+                txtNama.setText("Belok Kanan Sepanjang :");
+                txtJarak.setText(steps[i].getDistance().getText());
+
+                view.setDrawingCacheEnabled(true);
+                view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+                Bitmap snapshot;
+                try {
+                    view.measure(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                    snapshot = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(snapshot);
+                    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+                    view.draw(canvas);
+                } finally {
+                    view.setDrawingCacheEnabled(false);
+                }
+
+                String uri = saveToInternalStorage(snapshot, pesantren.getIdPesantren() + ".png");
+
                 GeoObject signObject = new GeoObject(10000 + i);
-                signObject.setImageResource(R.drawable.turn_right);
+                signObject.setImageUri(uri);
                 signObject.setGeoPosition(steps[i].getStartLocation().getLat(), steps[i].getStartLocation().getLng());
                 world.addBeyondarObject(signObject);
                 Log.d(TAG, "BELOK KANAN : " + i);
@@ -144,8 +219,28 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
             //instruksi belok kiri
             else if (instructions.contains("left")) {
                 Log.d(TAG, "INSTRUKSI : " + instructions);
+                imagePesantren.setImageResource(R.drawable.turn_left);
+                txtNama.setText("Belok Kiri Sepanjang :");
+                txtJarak.setText(steps[i].getDistance().getText());
+
+                view.setDrawingCacheEnabled(true);
+                view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+                Bitmap snapshot;
+                try {
+                    view.measure(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                    snapshot = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(snapshot);
+                    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+                    view.draw(canvas);
+                } finally {
+                    view.setDrawingCacheEnabled(false);
+                }
+
+                String uri = saveToInternalStorage(snapshot, pesantren.getIdPesantren() + ".png");
+
                 GeoObject signObject = new GeoObject(10000 + i);
-                signObject.setImageResource(R.drawable.turn_left);
+                signObject.setImageUri(uri);
                 signObject.setGeoPosition(steps[i].getStartLocation().getLat(), steps[i].getStartLocation().getLng());
                 world.addBeyondarObject(signObject);
                 Log.d(TAG, "BELOK KIRI : " + i);
@@ -224,6 +319,29 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
         }
 
         arFragmentSupport.setWorld(world);
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage, String name) {
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File mypath = new File(directory, name);
+
+        Log.e(TAG, "saveToInternalStorage: PATH:" + mypath.toString());
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return mypath.toString();
     }
 
     private void initData() {

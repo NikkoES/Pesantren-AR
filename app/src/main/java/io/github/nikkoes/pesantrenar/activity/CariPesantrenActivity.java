@@ -185,8 +185,6 @@ public class CariPesantrenActivity extends FragmentActivity implements GoogleApi
         }
         world.setDefaultImage(R.drawable.ar_sphere_default);
 
-        arFragmentSupport.getGLSurfaceView().setPullCloserDistance(40);
-
         //distance in metre (m)
         arFragmentSupport.setMaxDistanceToRender(radius);
 
@@ -207,6 +205,8 @@ public class CariPesantrenActivity extends FragmentActivity implements GoogleApi
             } catch (NullPointerException e) {
                 distance = Algorithm.calculateHarversine(0, 0, Double.parseDouble(listPesantren.get(i).getLatitude()), Double.parseDouble(listPesantren.get(i).getLongitude()));
             }
+
+            arFragmentSupport.getGLSurfaceView().setPullCloserDistance((float) distance * 30);
 
             Picasso.get().load(pesantren.getFoto()).placeholder(R.drawable.ic_launcher).into(imagePesantren);
             txtNama.setText(pesantren.getNamaPesantren());
