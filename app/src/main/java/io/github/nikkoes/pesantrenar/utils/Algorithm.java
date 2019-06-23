@@ -1,14 +1,22 @@
 package io.github.nikkoes.pesantrenar.utils;
 
+import android.location.Location;
+import android.location.LocationManager;
+import android.util.TimingLogger;
+
 import java.math.BigDecimal;
 
 import static java.lang.Math.toRadians;
 
 public class Algorithm {
 
+    private Location location;
+
     private final static int EARTH_RADIUS = 6371;
 
     public static double calculateHarversine(double myLat, double myLong, double pesantrenLat, double pesantrenLong) {
+        TimeLogger timings = new TimeLogger("HAVERSINE", pesantrenLat + " | " + pesantrenLong);
+
         double dLat = toRadians(pesantrenLat - myLat);
         double dLon = toRadians(pesantrenLong - myLong);
         myLat = toRadians(myLat);
@@ -16,6 +24,8 @@ public class Algorithm {
 
         float a = (float) (Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(myLat) * Math.cos(pesantrenLat));
         float c = (float) (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+
+        timings.dumpToLog();
         return convertTwo(EARTH_RADIUS * c);
     }
 

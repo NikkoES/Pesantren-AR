@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,10 +124,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                             for (int i = 0; i < listPesantren.size(); i++) {
                                 Pesantren pesantren = listPesantren.get(i);
+
                                 //init pesantren location
+                                //Log.e("LATLNG", pesantren.getIdPesantren() + " | " + pesantren.getLatitude() + " | " + pesantren.getLongitude());
+
+                                //show log -> adb shell setprop log.tag.MyTag VERBOSE
+
                                 LatLng lokasiPesantren = new LatLng(Double.parseDouble(pesantren.getLatitude()), Double.parseDouble(pesantren.getLongitude()));
+
+                                double jarak = Algorithm.calculateHarversine(myLat, myLong, lokasiPesantren.latitude, lokasiPesantren.longitude);
+
                                 if (myLat != 0 || myLong != 0) {
-                                    mMap.addMarker(new MarkerOptions().position(lokasiPesantren).title(pesantren.getNamaPesantren()).snippet("Jarak : " + Algorithm.calculateHarversine(myLat, myLong, lokasiPesantren.latitude, lokasiPesantren.longitude) + " KM").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                                    if (jarak < 20) {
+                                        Log.e("JARAK", "" + jarak);
+                                        mMap.addMarker(new MarkerOptions().position(lokasiPesantren).title(pesantren.getNamaPesantren()).snippet("Jarak : " + jarak + " KM").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                                    }
                                 }
                                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 

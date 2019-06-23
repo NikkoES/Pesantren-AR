@@ -85,7 +85,11 @@ public class DetailPesantrenActivity extends AppCompatActivity implements OnMapR
     }
 
     private void initUI() {
-        Picasso.get().load(pesantren.getFoto()).placeholder(R.drawable.ic_pesantren).into(imagePesantren);
+        if (pesantren.getFoto().equalsIgnoreCase("")) {
+            Picasso.get().load("http").placeholder(R.drawable.ic_pesantren).into(imagePesantren);
+        } else {
+            Picasso.get().load(pesantren.getFoto()).placeholder(R.drawable.ic_pesantren).into(imagePesantren);
+        }
         Location pesantrenLocation = new Location("");
         pesantrenLocation.setLatitude(Double.parseDouble(pesantren.getLatitude()));
         pesantrenLocation.setLongitude(Double.parseDouble(pesantren.getLongitude()));

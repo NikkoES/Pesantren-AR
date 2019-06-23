@@ -52,6 +52,7 @@ import io.github.nikkoes.pesantrenar.model.Pesantren;
 import io.github.nikkoes.pesantrenar.utils.Algorithm;
 import io.github.nikkoes.pesantrenar.utils.DialogUtils;
 import io.github.nikkoes.pesantrenar.utils.NetworkCheck;
+import io.github.nikkoes.pesantrenar.utils.TimeLogger;
 
 public class CariPesantrenActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks
         , GoogleApiClient.OnConnectionFailedListener, OnClickBeyondarObjectListener,

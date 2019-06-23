@@ -45,6 +45,8 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
 
     LocationManager locationManager;
 
+    String provider;
+
     private BottomBarAdapter pagerAdapter;
     private boolean notificationVisible = false;
 
@@ -76,7 +78,7 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        String provider = locationManager.getBestProvider(criteria, true);
+        provider = locationManager.getBestProvider(criteria, true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -170,14 +172,22 @@ public class DashboardActivity extends AppCompatActivity implements LocationList
         pagerAdapter = new BottomBarAdapter(getSupportFragmentManager());
 
         //get location
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        Location myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location myLocation = locationManager.getLastKnownLocation(provider);
 
-        pagerAdapter.addFragments(HomeFragment.newInstance(myLocation.getLatitude(), myLocation.getLongitude()));
-        pagerAdapter.addFragments(ListFragment.newInstance(myLocation.getLatitude(), myLocation.getLongitude()));
+        if (myLocation != null) {
+            pagerAdapter.addFragments(HomeFragment.newInstance(myLocation.getLatitude(), myLocation.getLongitude()));
+            pagerAdapter.addFragments(ListFragment.newInstance(myLocation.getLatitude(), myLocation.getLongitude()));
+
+            Log.e("LOCATION", "" + myLocation.getLatitude() + " - " + myLocation.getLatitude());
+        } else {
+            pagerAdapter.addFragments(HomeFragment.newInstance(0, 0));
+            pagerAdapter.addFragments(ListFragment.newInstance(0, 0));
+
+            Log.e("LOCATION", "NULL");
+        }
         pagerAdapter.addFragments(new AkunFragment());
 
         viewPager.setOffscreenPageLimit(3);

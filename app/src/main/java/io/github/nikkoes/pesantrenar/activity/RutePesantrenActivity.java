@@ -54,6 +54,7 @@ import io.github.nikkoes.pesantrenar.model.rute.RuteResponse;
 import io.github.nikkoes.pesantrenar.model.rute.Step;
 import io.github.nikkoes.pesantrenar.utils.Algorithm;
 import io.github.nikkoes.pesantrenar.utils.DialogUtils;
+import io.github.nikkoes.pesantrenar.utils.TimeLogger;
 
 import static io.github.nikkoes.pesantrenar.data.Constant.URL_MAPS;
 
@@ -102,13 +103,15 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
     }
 
     private void initAR() {
+        TimeLogger timings = new TimeLogger("DIJKSTRA", pesantren.getNamaPesantren());
+
         List<List<LatLng>> polylineLatLng = new ArrayList<>();
 
         world = new World(getApplicationContext());
 
         world.setGeoPosition(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         Log.d(TAG, "LOCATION : " + mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
-        world.setDefaultImage(R.drawable.ar_sphere_default);
+        world.setDefaultImage(R.drawable.ar_sphere_small);
 
         arFragmentSupport = (ArFragmentSupport) getSupportFragmentManager().findFragmentById(R.id.layout_cam_ar);
 
@@ -250,13 +253,13 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
         int temp_polycount = 0;
         int temp_inter_polycount = 0;
 
-        //untuk melakukan render ke bentuk AR
+        //perhitungan algoritma dijsktra
         for (int j = 0; j < polylineLatLng.size(); j++) {
             for (int k = 0; k < polylineLatLng.get(j).size(); k++) {
                 GeoObject polyGeoObj = new GeoObject(1000 + temp_polycount++);
 
                 polyGeoObj.setGeoPosition(polylineLatLng.get(j).get(k).latitude, polylineLatLng.get(j).get(k).longitude);
-                polyGeoObj.setImageResource(R.drawable.ar_sphere_default);
+                polyGeoObj.setImageResource(R.drawable.ar_sphere_small);
                 polyGeoObj.setName("arObj" + j + k);
 
                 try {
@@ -304,7 +307,7 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
                             }
 
                             inter_polyGeoObj.setGeoPosition(tempLatLng.latitude, tempLatLng.longitude);
-                            inter_polyGeoObj.setImageResource(R.drawable.ar_sphere_default);
+                            inter_polyGeoObj.setImageResource(R.drawable.ar_sphere_small);
                             inter_polyGeoObj.setName("inter_arObj" + j + k + i);
 
                             world.addBeyondarObject(inter_polyGeoObj);
@@ -319,6 +322,8 @@ public class RutePesantrenActivity extends AppCompatActivity implements GoogleAp
         }
 
         arFragmentSupport.setWorld(world);
+
+        timings.dumpToLog();
     }
 
     private String saveToInternalStorage(Bitmap bitmapImage, String name) {
